@@ -149,6 +149,7 @@
     const nextBtn = document.getElementById("nextBtn");
 
   
+
 function updatePage() {
   const imageId = images[currentPage];
   const imageElement = document.querySelector(imageId);
@@ -164,31 +165,26 @@ function updatePage() {
     return;
   }
 
-  const updateImage = () => {
-    arPage.setAttribute("src", imageId);
-    arPage.setAttribute("material", "shader: flat; transparent: true");
-    arPage.object3D.visible = true;
+  const showImage = () => {
+    // เปลี่ยนรูปผ่าน URL ของไฟล์ภาพจริง
+    arPage.setAttribute("src", imageElement.src);
 
-    // บังคับให้ A-Frame อัปเดตภาพที่แสดง
-    const mesh = arPage.getObject3D("mesh");
-    if (mesh && mesh.material) {
-      mesh.material.needsUpdate = true;
-      if (mesh.material.map) {
-        mesh.material.map.needsUpdate = true;
-      }
-    }
+    // สร้าง Material ใหม่เพื่อบังคับอัปเดต Texture
+    arPage.setAttribute(
+      "material",
+      "shader: flat; transparent: true; side: double"
+    );
   };
 
   if (imageElement.complete && imageElement.naturalWidth > 0) {
-    updateImage();
+    showImage();
   } else {
-    imageElement.onload = updateImage;
+    imageElement.onload = showImage;
     imageElement.onerror = () => {
       console.error("โหลดรูปไม่สำเร็จ:", imageId);
     };
   }
 }
-
 
     prevBtn.addEventListener("click", () => {
       if (currentPage > 0) {
