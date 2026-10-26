@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <title>WebAR ปฐมพยาบาล 6 ขั้นตอน</title>
+  <title>WebAR ปฐมพยาบาล 7 หน้า</title>
 
   <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
@@ -23,7 +23,6 @@
       font-family: sans-serif;
     }
 
-    /* ฉาก AR อยู่ด้านหลังปุ่ม */
     a-scene {
       position: fixed !important;
       inset: 0;
@@ -50,12 +49,12 @@
     #pageInfo {
       position: fixed;
       z-index: 99999;
-      bottom: 90px;
       left: 12px;
       right: 12px;
+      bottom: 90px;
       padding: 10px;
       border-radius: 10px;
-      background: rgba(0, 0, 0, 0.7);
+      background: rgba(0, 0, 0, 0.75);
       color: white;
       text-align: center;
       pointer-events: none;
@@ -104,7 +103,7 @@
     🩹 กำลังเตรียมกล้อง กรุณารอสักครู่
   </div>
 
-  <div id="pageInfo">หน้า 1 / 6</div>
+  <div id="pageInfo">หน้า 1 / 7</div>
 
   <div id="controls">
     <button id="prevBtn" type="button" disabled>
@@ -123,13 +122,16 @@
     vr-mode-ui="enabled: false"
     device-orientation-permission-ui="enabled: false">
 
+    <!-- โหลดภาพทั้งหมด -->
     <a-assets timeout="30000">
-      <img id="page1" src="./page1.png">
-      <img id="page2" src="./page2.png">
-      <img id="page3" src="./page3.png">
-      <img id="page4" src="./page4.png">
-      <img id="page5" src="./page5.png">
-      <img id="page6" src="./page6.png">
+      <img id="poster" src="./Thai First Aid Guide Infographic.png">
+
+      <img id="step1" src="./page1.png">
+      <img id="step2" src="./page2.png">
+      <img id="step3" src="./page3.png">
+      <img id="step4" src="./page4.png">
+      <img id="step5" src="./page5.png">
+      <img id="step6" src="./page6.png">
     </a-assets>
 
     <a-camera
@@ -137,19 +139,24 @@
       look-controls="enabled: false">
     </a-camera>
 
+    <!-- ใช้ Target เดิมสำหรับตรวจจับโปสเตอร์ -->
     <a-entity mindar-image-target="targetIndex: 0">
 
-      <a-image id="arPage1"
-        src="#page1"
+      <!-- หน้า 1: โปสเตอร์รวม -->
+      <a-image
+        id="arPoster"
+        src="#poster"
         position="0 0 0.05"
         width="1"
-        height="1"
+        height="1.5"
         material="shader: flat; transparent: true; side: double"
         visible="true">
       </a-image>
 
-      <a-image id="arPage2"
-        src="#page2"
+      <!-- หน้า 2: ขั้นตอนที่ 1 -->
+      <a-image
+        id="arPage1"
+        src="#step1"
         position="0 0 0.05"
         width="1"
         height="1"
@@ -157,8 +164,10 @@
         visible="false">
       </a-image>
 
-      <a-image id="arPage3"
-        src="#page3"
+      <!-- หน้า 3: ขั้นตอนที่ 2 -->
+      <a-image
+        id="arPage2"
+        src="#step2"
         position="0 0 0.05"
         width="1"
         height="1"
@@ -166,8 +175,10 @@
         visible="false">
       </a-image>
 
-      <a-image id="arPage4"
-        src="#page4"
+      <!-- หน้า 4: ขั้นตอนที่ 3 -->
+      <a-image
+        id="arPage3"
+        src="#step3"
         position="0 0 0.05"
         width="1"
         height="1"
@@ -175,8 +186,10 @@
         visible="false">
       </a-image>
 
-      <a-image id="arPage5"
-        src="#page5"
+      <!-- หน้า 5: ขั้นตอนที่ 4 -->
+      <a-image
+        id="arPage4"
+        src="#step4"
         position="0 0 0.05"
         width="1"
         height="1"
@@ -184,8 +197,21 @@
         visible="false">
       </a-image>
 
-      <a-image id="arPage6"
-        src="#page6"
+      <!-- หน้า 6: ขั้นตอนที่ 5 -->
+      <a-image
+        id="arPage5"
+        src="#step5"
+        position="0 0 0.05"
+        width="1"
+        height="1"
+        material="shader: flat; transparent: true; side: double"
+        visible="false">
+      </a-image>
+
+      <!-- หน้า 7: ขั้นตอนที่ 6 -->
+      <a-image
+        id="arPage6"
+        src="#step6"
         position="0 0 0.05"
         width="1"
         height="1"
@@ -198,12 +224,16 @@
 
   <script>
     (() => {
+      "use strict";
+
       const guide = document.getElementById("guide");
       const pageInfo = document.getElementById("pageInfo");
       const prevBtn = document.getElementById("prevBtn");
       const nextBtn = document.getElementById("nextBtn");
 
+      // เรียงลำดับภาพทั้ง 7 หน้า
       const pages = [
+        document.getElementById("arPoster"),
         document.getElementById("arPage1"),
         document.getElementById("arPage2"),
         document.getElementById("arPage3"),
@@ -214,46 +244,24 @@
 
       let currentPage = 0;
 
-function setOriginalImageSizes() {
-  pages.forEach((page) => {
-    if (!page) return;
-
-    const imageId = page.getAttribute("src").replace("#", "");
-    const image = document.getElementById(imageId);
-
-    function applySize() {
-      if (!image || !image.naturalWidth || !image.naturalHeight) {
+      // ตรวจสอบว่าองค์ประกอบภาพครบ
+      if (pages.some(page => page === null)) {
+        guide.textContent =
+          "เกิดข้อผิดพลาด: ตรวจสอบโค้ดภาพทั้ง 7 หน้า";
+        prevBtn.disabled = true;
+        nextBtn.disabled = true;
         return;
       }
 
-      // กำหนดความกว้างมาตรฐาน แล้วคำนวณความสูงตามต้นฉบับ
-      const width = 1;
-      const height = width * image.naturalHeight / image.naturalWidth;
-
-      page.setAttribute("width", width);
-      page.setAttribute("height", height);
-    }
-
-    if (image && image.complete) {
-      applySize();
-    } else if (image) {
-      image.addEventListener("load", applySize, { once: true });
-    }
-  });
-}
-
-      
-      // แสดงภาพตามหน้าที่เลือก
+      // เปลี่ยนภาพและอัปเดตหมายเลขหน้า
       function updatePage() {
         pages.forEach((page, index) => {
-          const show = index === currentPage;
+          const shouldShow = index === currentPage;
 
-          if (page) {
-            page.setAttribute("visible", show);
+          page.setAttribute("visible", shouldShow);
 
-            if (page.object3D) {
-              page.object3D.visible = show;
-            }
+          if (page.object3D) {
+            page.object3D.visible = shouldShow;
           }
         });
 
@@ -267,10 +275,9 @@ function setOriginalImageSizes() {
       // ไปหน้าถัดไป
       nextBtn.addEventListener("click", function (event) {
         event.preventDefault();
-        event.stopPropagation();
 
         if (currentPage < pages.length - 1) {
-          currentPage += 1;
+          currentPage++;
           updatePage();
         }
       });
@@ -278,15 +285,17 @@ function setOriginalImageSizes() {
       // กลับหน้าก่อนหน้า
       prevBtn.addEventListener("click", function (event) {
         event.preventDefault();
-        event.stopPropagation();
 
         if (currentPage > 0) {
-          currentPage -= 1;
+          currentPage--;
           updatePage();
         }
       });
 
-      // แสดงข้อความสถานะการตรวจจับโปสเตอร์
+      // เริ่มต้นที่หน้า 1
+      updatePage();
+
+      // ตรวจจับโปสเตอร์ด้วย Target เดิม
       const target = document.querySelector(
         "[mindar-image-target]"
       );
@@ -303,17 +312,26 @@ function setOriginalImageSizes() {
         });
       }
 
-     // ปรับสัดส่วนภาพตามต้นฉบับทุกหน้า
-setOriginalImageSizes();
+      // แจ้งเตือนเมื่อไฟล์ภาพโหลดไม่สำเร็จ
+      const imageIds = [
+        "poster",
+        "step1",
+        "step2",
+        "step3",
+        "step4",
+        "step5",
+        "step6"
+      ];
 
-// เริ่มต้นหน้าแรก
-updatePage();
-      
-      // แจ้งเตือนหากหาองค์ประกอบภาพไม่ครบ
-      if (pages.some(page => !page)) {
-        guide.textContent =
-          "เกิดข้อผิดพลาดในการเตรียมภาพ กรุณาตรวจสอบโค้ด";
-      }
+      imageIds.forEach(id => {
+        const image = document.getElementById(id);
+
+        image.addEventListener("error", function () {
+          guide.textContent =
+            "โหลดภาพไม่สำเร็จ: " + image.getAttribute("src");
+        });
+      });
+
     })();
   </script>
 
