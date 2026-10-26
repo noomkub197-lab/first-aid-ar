@@ -1,0 +1,192 @@
+
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>First Aid AR - Hiro Marker</title>
+
+  <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.7/aframe/build/aframe-ar.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+      background: #000;
+    }
+
+    #controls {
+      position: fixed;
+      z-index: 99999;
+      left: 0;
+      right: 0;
+      bottom: max(20px, env(safe-area-inset-bottom));
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      padding: 12px;
+      pointer-events: none;
+    }
+
+    #controls button {
+      pointer-events: auto;
+      border: none;
+      border-radius: 12px;
+      padding: 14px 24px;
+      font-size: 17px;
+      font-weight: bold;
+      color: white;
+      background: #087f5b;
+      cursor: pointer;
+      min-width: 105px;
+      box-shadow: 0 3px 10px #0005;
+    }
+
+    #controls button:disabled {
+      background: #777;
+      opacity: 0.65;
+    }
+
+    #pageLabel {
+      position: fixed;
+      z-index: 99999;
+      top: max(16px, env(safe-area-inset-top));
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 10px 16px;
+      border-radius: 10px;
+      color: white;
+      background: #000a;
+      font-size: 16px;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    #hint {
+      position: fixed;
+      z-index: 99999;
+      top: 65px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      max-width: 420px;
+      text-align: center;
+      color: white;
+      font-size: 14px;
+      line-height: 1.5;
+      text-shadow: 0 1px 4px #000;
+      pointer-events: none;
+    }
+
+    a-scene {
+      position: fixed !important;
+      inset: 0;
+      z-index: 1;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="pageLabel">หน้า 1 / 6</div>
+  <div id="hint">
+    ส่องกล้องไปที่ Hiro Marker เพื่อแสดงภาพ AR
+  </div>
+
+  <div id="controls">
+    <button id="prevBtn" disabled>◀ Prev</button>
+    <button id="nextBtn">Next ▶</button>
+  </div>
+
+  <a-scene
+    embedded
+    vr-mode-ui="enabled: false"
+    renderer="logarithmicDepthBuffer: true; precision: medium"
+    arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;"
+  >
+    <a-assets>
+      <img id="page1" src="./page1.png">
+      <img id="page2" src="./page2.png">
+      <img id="page3" src="./page3.png">
+      <img id="page4" src="./page4.png">
+      <img id="page5" src="./page5.png">
+      <img id="page6" src="./page6.png">
+    </a-assets>
+
+    <a-marker
+      id="hiroMarker"
+      preset="hiro"
+      smooth="true"
+      smoothCount="5"
+    >
+      <a-plane
+        id="pagePlane"
+        position="0 0.7 0"
+        width="1"
+        height="1"
+        material="src: #page1; shader: flat; side: double;"
+      ></a-plane>
+    </a-marker>
+
+    <a-entity camera></a-entity>
+  </a-scene>
+
+  <script>
+    const pages = [
+      "#page1",
+      "#page2",
+      "#page3",
+      "#page4",
+      "#page5",
+      "#page6"
+    ];
+
+    let currentPage = 0;
+
+    const pagePlane = document.getElementById("pagePlane");
+    const pageLabel = document.getElementById("pageLabel");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+
+    function showPage(index) {
+      currentPage = Math.max(
+        0,
+        Math.min(index, pages.length - 1)
+      );
+
+      pagePlane.setAttribute("material", {
+        src: pages[currentPage],
+        shader: "flat",
+        side: "double"
+      });
+
+      pageLabel.textContent =
+        `หน้า ${currentPage + 1} / ${pages.length}`;
+
+      prevBtn.disabled = currentPage === 0;
+      nextBtn.disabled = currentPage === pages.length - 1;
+    }
+
+    prevBtn.addEventListener("click", function () {
+      if (currentPage > 0) {
+        showPage(currentPage - 1);
+      }
+    });
+
+    nextBtn.addEventListener("click", function () {
+      if (currentPage < pages.length - 1) {
+        showPage(currentPage + 1);
+      }
+    });
+
+    showPage(0);
+  </script>
+</body>
+</html>
