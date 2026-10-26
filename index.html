@@ -214,6 +214,35 @@
 
       let currentPage = 0;
 
+function setOriginalImageSizes() {
+  pages.forEach((page) => {
+    if (!page) return;
+
+    const imageId = page.getAttribute("src").replace("#", "");
+    const image = document.getElementById(imageId);
+
+    function applySize() {
+      if (!image || !image.naturalWidth || !image.naturalHeight) {
+        return;
+      }
+
+      // กำหนดความกว้างมาตรฐาน แล้วคำนวณความสูงตามต้นฉบับ
+      const width = 1;
+      const height = width * image.naturalHeight / image.naturalWidth;
+
+      page.setAttribute("width", width);
+      page.setAttribute("height", height);
+    }
+
+    if (image && image.complete) {
+      applySize();
+    } else if (image) {
+      image.addEventListener("load", applySize, { once: true });
+    }
+  });
+}
+
+      
       // แสดงภาพตามหน้าที่เลือก
       function updatePage() {
         pages.forEach((page, index) => {
@@ -274,9 +303,12 @@
         });
       }
 
-      // เริ่มต้นหน้าแรก
-      updatePage();
+     // ปรับสัดส่วนภาพตามต้นฉบับทุกหน้า
+setOriginalImageSizes();
 
+// เริ่มต้นหน้าแรก
+updatePage();
+      
       // แจ้งเตือนหากหาองค์ประกอบภาพไม่ครบ
       if (pages.some(page => !page)) {
         guide.textContent =
