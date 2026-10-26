@@ -149,12 +149,6 @@
     const prevBtn = document.getElementById("prevBtn");
     const nextBtn = document.getElementById("nextBtn");
 
-  
-
-
-
-
-
 let imageRequestId = 0;
 
 function updatePage() {
@@ -163,7 +157,7 @@ function updatePage() {
   const imageElement = document.querySelector(imageId);
 
   pageInfo.textContent =
-    "หน้า " + (currentPage + 1) + " / " + images.length;
+    `หน้า ${currentPage + 1} / ${images.length}`;
 
   prevBtn.disabled = currentPage === 0;
   nextBtn.disabled = currentPage === images.length - 1;
@@ -173,22 +167,17 @@ function updatePage() {
     return;
   }
 
-  function showImage() {
-    // ป้องกันรูปเก่าที่โหลดช้ามาแทนหน้าปัจจุบัน
+  const showImage = () => {
     if (requestId !== imageRequestId) return;
 
-    if (!imageElement.naturalWidth) {
-      console.error("รูปโหลดไม่สำเร็จ:", imageId);
+    if (!imageElement.complete || imageElement.naturalWidth === 0) {
+      console.error("รูปยังไม่พร้อม:", imageId);
       return;
     }
 
-    arPage.setAttribute("material", {
-      shader: "flat",
-      transparent: true,
-      side: "double",
-      src: imageElement
-    });
-  }
+    // เปลี่ยนรูปผ่าน src ของ a-image โดยตรง
+    arPage.setAttribute("src", imageId);
+  };
 
   if (imageElement.complete && imageElement.naturalWidth > 0) {
     showImage();
@@ -196,16 +185,8 @@ function updatePage() {
     imageElement.addEventListener("load", showImage, {
       once: true
     });
-
-    imageElement.addEventListener("error", () => {
-      if (requestId === imageRequestId) {
-        console.error("โหลดรูปไม่สำเร็จ:", imageId);
-      }
-    }, { once: true });
   }
 }
-
-
     
 prevBtn.addEventListener("click", () => {
   if (currentPage > 0) {
