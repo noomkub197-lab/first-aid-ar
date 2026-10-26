@@ -149,6 +149,7 @@
     const prevBtn = document.getElementById("prevBtn");
     const nextBtn = document.getElementById("nextBtn");
 
+
 let imageRequestId = 0;
 
 function updatePage() {
@@ -167,17 +168,22 @@ function updatePage() {
     return;
   }
 
-  const showImage = () => {
+  function showImage() {
     if (requestId !== imageRequestId) return;
 
     if (!imageElement.complete || imageElement.naturalWidth === 0) {
-      console.error("รูปยังไม่พร้อม:", imageId);
+      console.error("รูปโหลดไม่สำเร็จ:", imageId);
       return;
     }
 
-    // เปลี่ยนรูปผ่าน src ของ a-image โดยตรง
-    arPage.setAttribute("src", imageId);
-  };
+    // เปลี่ยนภาพผ่าน Material เพียงจุดเดียว
+    arPage.setAttribute("material", {
+      shader: "flat",
+      transparent: true,
+      side: "double",
+      src: imageElement
+    });
+  }
 
   if (imageElement.complete && imageElement.naturalWidth > 0) {
     showImage();
@@ -187,6 +193,7 @@ function updatePage() {
     });
   }
 }
+
     
 prevBtn.addEventListener("click", () => {
   if (currentPage > 0) {
