@@ -152,6 +152,7 @@
   
 
 
+
 function updatePage() {
   const imageId = images[currentPage];
   const imageElement = document.querySelector(imageId);
@@ -168,17 +169,30 @@ function updatePage() {
   }
 
   const showImage = () => {
-    // ล้างภาพเดิมก่อน แล้วจึงกำหนดภาพใหม่
-    arPage.removeAttribute("src");
-    arPage.setAttribute("material", "shader: flat; transparent: true; side: double");
+    arPage.setAttribute(
+      "material",
+      "shader: flat; transparent: true; side: double"
+    );
+
     arPage.setAttribute("src", imageId);
   };
 
-  if (imageElement.complete && imageElement.naturalWidth > 0) {
-    const showImage = () => {
-  arPage.setAttribute("src", "");
-  arPage.setAttribute("src", imageElement.src);
-};
+  if (imageElement.complete) {
+    if (imageElement.naturalWidth > 0) {
+      showImage();
+    } else {
+      console.error("โหลดรูปไม่สำเร็จ:", imageId);
+    }
+  } else {
+    imageElement.addEventListener("load", showImage, {
+      once: true
+    });
+
+    imageElement.addEventListener(
+      "error",
+      () => console.error("โหลดรูปไม่สำเร็จ:", imageId),
+      { once: true }
+    );
   }
 }
 
