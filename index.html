@@ -1,0 +1,111 @@
+
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>WebAR ปฐมพยาบาล</title>
+
+  <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+    }
+
+    #guide {
+      position: fixed;
+      z-index: 10;
+      top: 12px;
+      left: 12px;
+      right: 12px;
+      padding: 14px;
+      border-radius: 14px;
+      background: white;
+      color: #333;
+      text-align: center;
+      box-shadow: 0 2px 10px #0002;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="guide">
+    🩹 ส่องกล้องไปที่โปสเตอร์ปฐมพยาบาล
+  </div>
+
+  <a-scene
+    mindar-image="imageTargetSrc: ./targets.mind; autoStart: true;"
+    color-space="sRGB"
+    renderer="colorManagement: true"
+    vr-mode-ui="enabled: false"
+    device-orientation-permission-ui="enabled: false">
+
+    <a-camera
+      position="0 0 0"
+      look-controls="enabled: false">
+    </a-camera>
+
+    <a-entity mindar-image-target="targetIndex: 0">
+
+      <!-- กากบาทสีแดงแบบ 2D -->
+      <a-plane
+        position="0 0.12 0.05"
+        width="0.16"
+        height="0.48"
+        color="#E53935"
+        material="shader: flat">
+      </a-plane>
+
+      <a-plane
+        position="0 0.12 0.06"
+        width="0.48"
+        height="0.16"
+        color="#E53935"
+        material="shader: flat">
+      </a-plane>
+
+      <!-- พื้นหลังข้อความ -->
+      <a-plane
+        position="0 -0.30 0.04"
+        width="1.15"
+        height="0.28"
+        color="#FFFFFF"
+        material="shader: flat">
+      </a-plane>
+
+      <!-- ข้อความภาษาไทย -->
+      <a-text
+        value="ขั้นตอนที่ 1\nตรวจสอบความปลอดภัย"
+        position="0 -0.30 0.07"
+        align="center"
+        anchor="center"
+        color="#263238"
+        width="1.05"
+        wrap-count="24">
+      </a-text>
+
+    </a-entity>
+  </a-scene>
+
+  <script>
+    const guide = document.getElementById("guide");
+    const target = document.querySelector(
+      "[mindar-image-target]"
+    );
+
+    target.addEventListener("targetFound", () => {
+      guide.textContent =
+        "พบโปสเตอร์แล้ว — ตรวจสอบความปลอดภัยก่อนช่วยเหลือ";
+    });
+
+    target.addEventListener("targetLost", () => {
+      guide.textContent =
+        "ส่องกล้องไปที่โปสเตอร์ปฐมพยาบาล";
+    });
+  </script>
+</body>
+</html>
