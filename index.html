@@ -198,16 +198,32 @@ const pages = Array.from(
   (_, i) => document.getElementById(`arPage${i + 1}`)
 );
 
+
 function updatePage() {
-  pages.forEach((page, index) => {
-    page.setAttribute("visible", index === currentPage);
-  });
+  const scene = document.querySelector("a-scene");
 
   pageInfo.textContent =
-    `หน้า ${currentPage + 1} / ${pages.length}`;
+    `หน้า ${currentPage + 1} / 6`;
 
   prevBtn.disabled = currentPage === 0;
-  nextBtn.disabled = currentPage === pages.length - 1;
+  nextBtn.disabled = currentPage === 5;
+
+  pages.forEach((page, index) => {
+    if (!page) return;
+
+    const isCurrent = index === currentPage;
+
+    // กำหนดการแสดงผลของวัตถุ 3D โดยตรง
+    page.object3D.visible = isCurrent;
+  });
+
+  console.log("หน้าปัจจุบัน:", currentPage + 1);
+
+  if (!scene.hasLoaded) {
+    scene.addEventListener("loaded", updatePage, {
+      once: true
+    });
+  }
 }
 
 prevBtn.addEventListener("click", () => {
