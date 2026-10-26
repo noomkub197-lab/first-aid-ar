@@ -150,6 +150,7 @@
 
   
 
+
 function updatePage() {
   const imageId = images[currentPage];
   const imageElement = document.querySelector(imageId);
@@ -166,14 +167,10 @@ function updatePage() {
   }
 
   const showImage = () => {
-    // เปลี่ยนรูปผ่าน URL ของไฟล์ภาพจริง
-    arPage.setAttribute("src", imageElement.src);
-
-    // สร้าง Material ใหม่เพื่อบังคับอัปเดต Texture
-    arPage.setAttribute(
-      "material",
-      "shader: flat; transparent: true; side: double"
-    );
+    // ล้างภาพเดิมก่อน แล้วจึงกำหนดภาพใหม่
+    arPage.removeAttribute("src");
+    arPage.setAttribute("material", "shader: flat; transparent: true; side: double");
+    arPage.setAttribute("src", imageId);
   };
 
   if (imageElement.complete && imageElement.naturalWidth > 0) {
