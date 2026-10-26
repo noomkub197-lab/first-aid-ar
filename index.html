@@ -154,7 +154,11 @@
 
 
 
+
+let imageRequestId = 0;
+
 function updatePage() {
+  const requestId = ++imageRequestId;
   const imageId = images[currentPage];
   const imageElement = document.querySelector(imageId);
 
@@ -169,29 +173,34 @@ function updatePage() {
     return;
   }
 
-  const changeImage = () => {
+  function showImage() {
+    // ป้องกันรูปเก่าที่โหลดช้ามาแทนหน้าปัจจุบัน
+    if (requestId !== imageRequestId) return;
+
     if (!imageElement.naturalWidth) {
       console.error("รูปโหลดไม่สำเร็จ:", imageId);
       return;
     }
 
-    // เปลี่ยน texture ของ A-Frame เป็นรูปหน้าที่เลือก
     arPage.setAttribute("material", {
       shader: "flat",
       transparent: true,
       side: "double",
       src: imageElement
     });
-  };
+  }
 
   if (imageElement.complete && imageElement.naturalWidth > 0) {
-    changeImage();
+    showImage();
   } else {
-    imageElement.addEventListener("load", changeImage, {
+    imageElement.addEventListener("load", showImage, {
       once: true
     });
+
     imageElement.addEventListener("error", () => {
-      console.error("โหลดรูปไม่สำเร็จ:", imageId);
+      if (requestId === imageRequestId) {
+        console.error("โหลดรูปไม่สำเร็จ:", imageId);
+      }
     }, { once: true });
   }
 }
