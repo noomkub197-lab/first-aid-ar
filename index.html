@@ -1,0 +1,180 @@
+
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f0fdf4">
+  <title>First Aid AR | เมนูหลัก</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, Tahoma, sans-serif;
+      background: linear-gradient(160deg, #f0fdf4, #eff6ff);
+      color: #18352b;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px 16px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 440px;
+      text-align: center;
+    }
+
+    .medical-icon {
+      width: 82px;
+      height: 82px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0 auto 18px;
+      background: #16a34a;
+      color: white;
+      border-radius: 24px;
+      font-size: 48px;
+      font-weight: bold;
+      box-shadow: 0 8px 22px #16a34a30;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 30px;
+      letter-spacing: 1px;
+    }
+
+    .subtitle {
+      margin: 12px 0 28px;
+      color: #587064;
+      line-height: 1.7;
+      font-size: 15px;
+    }
+
+    .menu {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .menu-link {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 20px 18px;
+      background: white;
+      border: 1px solid #dcebe0;
+      border-radius: 18px;
+      text-decoration: none;
+      color: inherit;
+      text-align: left;
+      box-shadow: 0 5px 16px #173c2510;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .menu-link:active {
+      transform: scale(0.98);
+    }
+
+    .menu-icon {
+      flex-shrink: 0;
+      width: 54px;
+      height: 54px;
+      border-radius: 15px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 27px;
+    }
+
+    .mindar-icon {
+      background: #dcfce7;
+    }
+
+    .hiro-icon {
+      background: #dbeafe;
+    }
+
+    .menu-text {
+      flex: 1;
+    }
+
+    .menu-text strong {
+      display: block;
+      font-size: 18px;
+      margin-bottom: 6px;
+    }
+
+    .menu-text span {
+      display: block;
+      color: #64756b;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .arrow {
+      font-size: 24px;
+      color: #84958a;
+    }
+
+    .note {
+      margin-top: 24px;
+      color: #64756b;
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    footer {
+      margin-top: 24px;
+      color: #819087;
+      font-size: 12px;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="container">
+    <div class="medical-icon" aria-hidden="true">+</div>
+
+    <h1>FIRST AID AR</h1>
+    <p class="subtitle">
+      คู่มือปฐมพยาบาลเบื้องต้น<br>
+      เรียนรู้ขั้นตอนผ่านเทคโนโลยี AR
+    </p>
+
+    <nav class="menu" aria-label="เลือกโหมด AR">
+      <a class="menu-link" href="./index-mindar.html">
+        <div class="menu-icon mindar-icon" aria-hidden="true">📷</div>
+        <div class="menu-text">
+          <strong>MindAR</strong>
+          <span>สแกนโปสเตอร์ปฐมพยาบาลเดิม</span>
+        </div>
+        <span class="arrow" aria-hidden="true">›</span>
+      </a>
+
+      <a class="menu-link" href="./hiro.html">
+        <div class="menu-icon hiro-icon" aria-hidden="true">🎯</div>
+        <div class="menu-text">
+          <strong>Hiro Marker</strong>
+          <span>สแกน Marker ด้วยระบบ AR.js</span>
+        </div>
+        <span class="arrow" aria-hidden="true">›</span>
+      </a>
+    </nav>
+
+    <p class="note">
+      เลือกโหมดที่ต้องการ แล้วอนุญาตให้เว็บไซต์ใช้กล้อง<br>
+      เพื่อเริ่มต้นใช้งาน AR
+    </p>
+
+    <footer>First Aid AR · Interactive Learning</footer>
+  </main>
+</body>
+</html>
