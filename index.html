@@ -117,17 +117,57 @@
       look-controls="enabled: false">
     </a-camera>
 
-    <a-entity mindar-image-target="targetIndex: 0">
-     <a-image
-  id="arPage"
-  src="#page1"
-  position="0 0 0.05"
-  width="1"
-  height="1.5"
-  material="shader: flat; transparent: true"
-  geometry="primitive: plane">
-</a-image>
-    </a-entity>
+   
+<a-entity mindar-image-target="targetIndex: 0">
+  <a-image id="arPage1"
+    src="#page1"
+    position="0 0 0.05"
+    width="1" height="1.5"
+    material="shader: flat; transparent: true; side: double"
+    visible="true">
+  </a-image>
+
+  <a-image id="arPage2"
+    src="#page2"
+    position="0 0 0.05"
+    width="1" height="1.5"
+    material="shader: flat; transparent: true; side: double"
+    visible="false">
+  </a-image>
+
+  <a-image id="arPage3"
+    src="#page3"
+    position="0 0 0.05"
+    width="1" height="1.5"
+    material="shader: flat; transparent: true; side: double"
+    visible="false">
+  </a-image>
+
+  <a-image id="arPage4"
+    src="#page4"
+    position="0 0 0.05"
+    width="1" height="1.5"
+    material="shader: flat; transparent: true; side: double"
+    visible="false">
+  </a-image>
+
+  <a-image id="arPage5"
+    src="#page5"
+    position="0 0 0.05"
+    width="1" height="1.5"
+    material="shader: flat; transparent: true; side: double"
+    visible="false">
+  </a-image>
+
+  <a-image id="arPage6"
+    src="#page6"
+    position="0 0 0.05"
+    width="1" height="1.5"
+    material="shader: flat; transparent: true; side: double"
+    visible="false">
+  </a-image>
+</a-entity>
+
   </a-scene>
 
   <script>
@@ -143,7 +183,7 @@
     let currentPage = 0;
     let targetVisible = false;
 
-    const arPage = document.getElementById("arPage");
+  
     const guide = document.getElementById("guide");
     const pageInfo = document.getElementById("pageInfo");
     const prevBtn = document.getElementById("prevBtn");
@@ -152,49 +192,24 @@
 
 let imageRequestId = 0;
 
+
+const pages = Array.from(
+  { length: 6 },
+  (_, i) => document.getElementById(`arPage${i + 1}`)
+);
+
 function updatePage() {
-  const requestId = ++imageRequestId;
-  const imageId = images[currentPage];
-  const imageElement = document.querySelector(imageId);
+  pages.forEach((page, index) => {
+    page.setAttribute("visible", index === currentPage);
+  });
 
   pageInfo.textContent =
-    `หน้า ${currentPage + 1} / ${images.length}`;
+    `หน้า ${currentPage + 1} / ${pages.length}`;
 
   prevBtn.disabled = currentPage === 0;
-  nextBtn.disabled = currentPage === images.length - 1;
-
-  if (!imageElement) {
-    console.error("ไม่พบรูป:", imageId);
-    return;
-  }
-
-  function showImage() {
-    if (requestId !== imageRequestId) return;
-
-    if (!imageElement.complete || imageElement.naturalWidth === 0) {
-      console.error("รูปโหลดไม่สำเร็จ:", imageId);
-      return;
-    }
-
-    // เปลี่ยนภาพผ่าน Material เพียงจุดเดียว
-    arPage.setAttribute("material", {
-      shader: "flat",
-      transparent: true,
-      side: "double",
-      src: imageElement
-    });
-  }
-
-  if (imageElement.complete && imageElement.naturalWidth > 0) {
-    showImage();
-  } else {
-    imageElement.addEventListener("load", showImage, {
-      once: true
-    });
-  }
+  nextBtn.disabled = currentPage === pages.length - 1;
 }
 
-    
 prevBtn.addEventListener("click", () => {
   if (currentPage > 0) {
     currentPage--;
@@ -203,9 +218,13 @@ prevBtn.addEventListener("click", () => {
 });
 
 nextBtn.addEventListener("click", () => {
-  if (currentPage < images.length - 1) {
+  if (currentPage < pages.length - 1) {
     currentPage++;
     updatePage();
+  }
+});
+
+updatePage();
   }
 });
 
