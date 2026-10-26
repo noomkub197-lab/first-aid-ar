@@ -153,6 +153,7 @@
 
 
 
+
 function updatePage() {
   const imageId = images[currentPage];
   const imageElement = document.querySelector(imageId);
@@ -168,47 +169,49 @@ function updatePage() {
     return;
   }
 
-  const showImage = () => {
-    arPage.setAttribute(
-      "material",
-      "shader: flat; transparent: true; side: double"
-    );
+  const changeImage = () => {
+    if (!imageElement.naturalWidth) {
+      console.error("รูปโหลดไม่สำเร็จ:", imageId);
+      return;
+    }
 
-    arPage.setAttribute("src", imageId);
+    // เปลี่ยน texture ของ A-Frame เป็นรูปหน้าที่เลือก
+    arPage.setAttribute("material", {
+      shader: "flat",
+      transparent: true,
+      side: "double",
+      src: imageElement
+    });
   };
 
-  if (imageElement.complete) {
-    if (imageElement.naturalWidth > 0) {
-      showImage();
-    } else {
-      console.error("โหลดรูปไม่สำเร็จ:", imageId);
-    }
+  if (imageElement.complete && imageElement.naturalWidth > 0) {
+    changeImage();
   } else {
-    imageElement.addEventListener("load", showImage, {
+    imageElement.addEventListener("load", changeImage, {
       once: true
     });
-
-    imageElement.addEventListener(
-      "error",
-      () => console.error("โหลดรูปไม่สำเร็จ:", imageId),
-      { once: true }
-    );
+    imageElement.addEventListener("error", () => {
+      console.error("โหลดรูปไม่สำเร็จ:", imageId);
+    }, { once: true });
   }
 }
 
-    prevBtn.addEventListener("click", () => {
-      if (currentPage > 0) {
-        currentPage--;
-        updatePage();
-      }
-    });
 
-    nextBtn.addEventListener("click", () => {
-      if (currentPage < images.length - 1) {
-        currentPage++;
-        updatePage();
-      }
-    });
+    
+prevBtn.addEventListener("click", () => {
+  if (currentPage > 0) {
+    currentPage--;
+    updatePage();
+  }
+});
+
+nextBtn.addEventListener("click", () => {
+  if (currentPage < images.length - 1) {
+    currentPage++;
+    updatePage();
+  }
+});
+
 
     const target = document.querySelector(
       "[mindar-image-target]"
