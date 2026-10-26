@@ -7,6 +7,7 @@
 
   <title>WebAR ปฐมพยาบาล 6 ขั้นตอน</title>
 
+  <!-- A-Frame และ MindAR -->
   <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
 
@@ -22,7 +23,7 @@
 
     #guide {
       position: fixed;
-      z-index: 10;
+      z-index: 999;
       top: 12px;
       left: 12px;
       right: 12px;
@@ -34,16 +35,30 @@
       box-shadow: 0 2px 10px #0002;
     }
 
+    #pageInfo {
+      position: fixed;
+      z-index: 999;
+      bottom: 86px;
+      left: 12px;
+      right: 12px;
+      padding: 8px;
+      border-radius: 10px;
+      background: #0009;
+      color: white;
+      text-align: center;
+      pointer-events: none;
+    }
+
     #controls {
       position: fixed;
-      z-index: 20;
+      z-index: 1000;
       left: 12px;
       right: 12px;
       bottom: max(16px, env(safe-area-inset-bottom));
       display: flex;
-      gap: 12px;
-      align-items: center;
       justify-content: center;
+      align-items: center;
+      gap: 12px;
     }
 
     #controls button {
@@ -57,45 +72,38 @@
       font-size: 16px;
       font-weight: bold;
       cursor: pointer;
+      touch-action: manipulation;
     }
 
     #controls button:disabled {
       background: #999;
       cursor: default;
     }
-
-    #pageInfo {
-      position: fixed;
-      z-index: 20;
-      bottom: 82px;
-      left: 12px;
-      right: 12px;
-      text-align: center;
-      color: white;
-      background: #0009;
-      padding: 8px;
-      border-radius: 10px;
-      pointer-events: none;
-    }
   </style>
 </head>
 
 <body>
+
+  <!-- ข้อความแนะนำ -->
   <div id="guide">
     🩹 ส่องกล้องไปที่โปสเตอร์ปฐมพยาบาล
   </div>
 
+  <!-- หมายเลขหน้า -->
   <div id="pageInfo">หน้า 1 / 6</div>
 
+  <!-- ปุ่มควบคุม -->
   <div id="controls">
     <button id="prevBtn" type="button" disabled>
       ◀ ย้อนกลับ
     </button>
+
     <button id="nextBtn" type="button">
       ถัดไป ▶
     </button>
   </div>
 
+  <!-- ฉาก AR -->
   <a-scene
     mindar-image="imageTargetSrc: ./targets.mind; autoStart: true;"
     color-space="sRGB"
@@ -103,165 +111,166 @@
     vr-mode-ui="enabled: false"
     device-orientation-permission-ui="enabled: false">
 
-    <a-assets timeout="15000">
-  <img id="page1" src="./page1.png" crossorigin="anonymous">
-  <img id="page2" src="./page2.png" crossorigin="anonymous">
-  <img id="page3" src="./page3.png" crossorigin="anonymous">
-  <img id="page4" src="./page4.png" crossorigin="anonymous">
-  <img id="page5" src="./page5.png" crossorigin="anonymous">
-  <img id="page6" src="./page6.png" crossorigin="anonymous">
-</a-assets>
+    <!-- รูปภาพทั้ง 6 หน้า -->
+    <a-assets timeout="20000">
+      <img id="page1" src="./page1.png" crossorigin="anonymous">
+      <img id="page2" src="./page2.png" crossorigin="anonymous">
+      <img id="page3" src="./page3.png" crossorigin="anonymous">
+      <img id="page4" src="./page4.png" crossorigin="anonymous">
+      <img id="page5" src="./page5.png" crossorigin="anonymous">
+      <img id="page6" src="./page6.png" crossorigin="anonymous">
+    </a-assets>
 
+    <!-- กล้อง -->
     <a-camera
       position="0 0 0"
       look-controls="enabled: false">
     </a-camera>
 
-   
-<a-entity mindar-image-target="targetIndex: 0">
-  <a-image id="arPage1"
-    src="#page1"
-    position="0 0 0.05"
-    width="1" height="1.5"
-    material="shader: flat; transparent: true; side: double"
-    visible="true">
-  </a-image>
+    <!-- แสดงภาพเมื่อพบโปสเตอร์เป้าหมาย -->
+    <a-entity mindar-image-target="targetIndex: 0">
 
-  <a-image id="arPage2"
-    src="#page2"
-    position="0 0 0.05"
-    width="1" height="1.5"
-    material="shader: flat; transparent: true; side: double"
-    visible="false">
-  </a-image>
+      <a-image
+        id="arPage1"
+        src="#page1"
+        position="0 0 0.05"
+        width="1"
+        height="1.5"
+        material="shader: flat; transparent: true; side: double"
+        visible="true">
+      </a-image>
 
-  <a-image id="arPage3"
-    src="#page3"
-    position="0 0 0.05"
-    width="1" height="1.5"
-    material="shader: flat; transparent: true; side: double"
-    visible="false">
-  </a-image>
+      <a-image
+        id="arPage2"
+        src="#page2"
+        position="0 0 0.05"
+        width="1"
+        height="1.5"
+        material="shader: flat; transparent: true; side: double"
+        visible="false">
+      </a-image>
 
-  <a-image id="arPage4"
-    src="#page4"
-    position="0 0 0.05"
-    width="1" height="1.5"
-    material="shader: flat; transparent: true; side: double"
-    visible="false">
-  </a-image>
+      <a-image
+        id="arPage3"
+        src="#page3"
+        position="0 0 0.05"
+        width="1"
+        height="1.5"
+        material="shader: flat; transparent: true; side: double"
+        visible="false">
+      </a-image>
 
-  <a-image id="arPage5"
-    src="#page5"
-    position="0 0 0.05"
-    width="1" height="1.5"
-    material="shader: flat; transparent: true; side: double"
-    visible="false">
-  </a-image>
+      <a-image
+        id="arPage4"
+        src="#page4"
+        position="0 0 0.05"
+        width="1"
+        height="1.5"
+        material="shader: flat; transparent: true; side: double"
+        visible="false">
+      </a-image>
 
-  <a-image id="arPage6"
-    src="#page6"
-    position="0 0 0.05"
-    width="1" height="1.5"
-    material="shader: flat; transparent: true; side: double"
-    visible="false">
-  </a-image>
-</a-entity>
+      <a-image
+        id="arPage5"
+        src="#page5"
+        position="0 0 0.05"
+        width="1"
+        height="1.5"
+        material="shader: flat; transparent: true; side: double"
+        visible="false">
+      </a-image>
 
+      <a-image
+        id="arPage6"
+        src="#page6"
+        position="0 0 0.05"
+        width="1"
+        height="1.5"
+        material="shader: flat; transparent: true; side: double"
+        visible="false">
+      </a-image>
+
+    </a-entity>
   </a-scene>
 
   <script>
-    const images = [
-      "#page1",
-      "#page2",
-      "#page3",
-      "#page4",
-      "#page5",
-      "#page6"
-    ];
-
-    let currentPage = 0;
-    let targetVisible = false;
-
-  
+    // เก็บองค์ประกอบ HTML
     const guide = document.getElementById("guide");
     const pageInfo = document.getElementById("pageInfo");
     const prevBtn = document.getElementById("prevBtn");
     const nextBtn = document.getElementById("nextBtn");
 
+    // เก็บภาพทั้ง 6 หน้า
+    const pages = [
+      document.getElementById("arPage1"),
+      document.getElementById("arPage2"),
+      document.getElementById("arPage3"),
+      document.getElementById("arPage4"),
+      document.getElementById("arPage5"),
+      document.getElementById("arPage6")
+    ];
 
-let imageRequestId = 0;
+    let currentPage = 0;
 
+    // เปลี่ยนภาพและอัปเดตปุ่ม
+    function updatePage() {
+      pages.forEach((page, index) => {
+        if (page) {
+          const isCurrentPage = index === currentPage;
 
-const pages = Array.from(
-  { length: 6 },
-  (_, i) => document.getElementById(`arPage${i + 1}`)
-);
+          // แสดงเฉพาะภาพของหน้าปัจจุบัน
+          page.setAttribute("visible", isCurrentPage);
 
+          // กำหนดการมองเห็นโดยตรงกับวัตถุ 3D ด้วย
+          if (page.object3D) {
+            page.object3D.visible = isCurrentPage;
+          }
+        }
+      });
 
-function updatePage() {
-  const scene = document.querySelector("a-scene");
+      pageInfo.textContent =
+        `หน้า ${currentPage + 1} / ${pages.length}`;
 
-  pageInfo.textContent =
-    `หน้า ${currentPage + 1} / 6`;
+      prevBtn.disabled = currentPage === 0;
+      nextBtn.disabled = currentPage === pages.length - 1;
+    }
 
-  prevBtn.disabled = currentPage === 0;
-  nextBtn.disabled = currentPage === 5;
-
-  pages.forEach((page, index) => {
-    if (!page) return;
-
-    const isCurrent = index === currentPage;
-
-    // กำหนดการแสดงผลของวัตถุ 3D โดยตรง
-    page.object3D.visible = isCurrent;
-  });
-
-  console.log("หน้าปัจจุบัน:", currentPage + 1);
-
-  if (!scene.hasLoaded) {
-    scene.addEventListener("loaded", updatePage, {
-      once: true
+    // ปุ่มย้อนกลับ
+    prevBtn.addEventListener("click", () => {
+      if (currentPage > 0) {
+        currentPage--;
+        updatePage();
+      }
     });
-  }
-}
 
-prevBtn.addEventListener("click", () => {
-  if (currentPage > 0) {
-    currentPage--;
-    updatePage();
-  }
-});
+    // ปุ่มถัดไป
+    nextBtn.addEventListener("click", () => {
+      if (currentPage < pages.length - 1) {
+        currentPage++;
+        updatePage();
+      }
+    });
 
-nextBtn.addEventListener("click", () => {
-  if (currentPage < pages.length - 1) {
-    currentPage++;
-    updatePage();
-
-updatePage();
-
-const target = document.querySelector(
-  "[mindar-image-target]"
-);
-
-
+    // แจ้งสถานะเมื่อพบหรือไม่พบโปสเตอร์
     const target = document.querySelector(
       "[mindar-image-target]"
     );
 
-    target.addEventListener("targetFound", () => {
-      targetVisible = true;
-      guide.textContent =
-        "พบโปสเตอร์แล้ว — กดถัดไปเพื่อดูขั้นตอน";
-    });
+    if (target) {
+      target.addEventListener("targetFound", () => {
+        guide.textContent =
+          "พบโปสเตอร์แล้ว — กดถัดไปเพื่อดูขั้นตอน";
+      });
 
-    target.addEventListener("targetLost", () => {
-      targetVisible = false;
-      guide.textContent =
-        "ส่องกล้องไปที่โปสเตอร์ปฐมพยาบาล";
-    });
+      target.addEventListener("targetLost", () => {
+        guide.textContent =
+          "ส่องกล้องไปที่โปสเตอร์ปฐมพยาบาล";
+      });
+    }
 
+    // เริ่มต้นที่หน้า 1
     updatePage();
   </script>
+
 </body>
 </html>
