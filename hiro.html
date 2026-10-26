@@ -3,115 +3,122 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>First Aid AR - Hiro Marker</title>
 
+  <!-- A-Frame และ AR.js -->
   <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.7/aframe/build/aframe-ar.js"></script>
+  <script src="https://raw.githack.com/AR-js-org/AR.js/3.4.7/aframe/build/aframe-ar.js"></script>
 
   <style>
     * {
       box-sizing: border-box;
     }
 
-    body {
+    html, body {
       margin: 0;
-      font-family: Arial, sans-serif;
+      width: 100%;
+      height: 100%;
       overflow: hidden;
-      background: #000;
+      font-family: Arial, sans-serif;
+    }
+
+    #topbar {
+      position: fixed;
+      z-index: 10;
+      top: max(12px, env(safe-area-inset-top));
+      left: 12px;
+      right: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      pointer-events: none;
+    }
+
+    .pill {
+      padding: 10px 12px;
+      border-radius: 20px;
+      color: white;
+      background: rgba(0, 0, 0, 0.75);
+      font-size: 14px;
+    }
+
+    #status {
+      max-width: 75%;
+    }
+
+    #homeLink {
+      color: white;
+      background: rgba(0, 0, 0, 0.75);
+      padding: 10px 12px;
+      border-radius: 20px;
+      text-decoration: none;
+      font-size: 14px;
+      pointer-events: auto;
+      white-space: nowrap;
     }
 
     #controls {
       position: fixed;
-      z-index: 99999;
-      left: 0;
-      right: 0;
-      bottom: max(20px, env(safe-area-inset-bottom));
+      z-index: 10;
+      left: 10px;
+      right: 10px;
+      bottom: max(18px, env(safe-area-inset-bottom));
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 20px;
-      padding: 12px;
-      pointer-events: none;
+      gap: 10px;
     }
 
-    #controls button {
-      pointer-events: auto;
+    button {
+      padding: 12px 15px;
+      min-width: 95px;
       border: none;
       border-radius: 12px;
-      padding: 14px 24px;
-      font-size: 17px;
+      background: #1769e0;
+      color: white;
+      font-size: 15px;
       font-weight: bold;
-      color: white;
-      background: #087f5b;
       cursor: pointer;
-      min-width: 105px;
-      box-shadow: 0 3px 10px #0005;
+      touch-action: manipulation;
     }
 
-    #controls button:disabled {
-      background: #777;
-      opacity: 0.65;
-    }
-
-    #pageLabel {
-      position: fixed;
-      z-index: 99999;
-      top: max(16px, env(safe-area-inset-top));
-      left: 50%;
-      transform: translateX(-50%);
-      padding: 10px 16px;
-      border-radius: 10px;
-      color: white;
-      background: #000a;
-      font-size: 16px;
-      white-space: nowrap;
-      pointer-events: none;
-    }
-
-    #hint {
-      position: fixed;
-      z-index: 99999;
-      top: 65px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 90%;
-      max-width: 420px;
-      text-align: center;
-      color: white;
-      font-size: 14px;
-      line-height: 1.5;
-      text-shadow: 0 1px 4px #000;
-      pointer-events: none;
+    button:disabled {
+      opacity: 0.45;
     }
 
     a-scene {
-      position: fixed !important;
+      position: fixed;
       inset: 0;
-      z-index: 1;
+      z-index: 0;
     }
   </style>
 </head>
 
 <body>
-  <div id="pageLabel">หน้า 1 / 6</div>
-  <div id="hint">
-    ส่องกล้องไปที่ Hiro Marker เพื่อแสดงภาพ AR
+
+  <div id="topbar">
+    <div id="status" class="pill">
+      กำลังเปิดกล้อง...
+    </div>
+    <a id="homeLink" href="./index.html">กลับเมนู</a>
   </div>
 
   <div id="controls">
-    <button id="prevBtn" disabled>◀ Prev</button>
-    <button id="nextBtn">Next ▶</button>
+    <button id="prevBtn" type="button">← ก่อนหน้า</button>
+    <div id="pageCount" class="pill">หน้า 1 / 6</div>
+    <button id="nextBtn" type="button">ถัดไป →</button>
   </div>
 
   <a-scene
     embedded
     vr-mode-ui="enabled: false"
-    renderer="logarithmicDepthBuffer: true; precision: medium"
-    arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;"
+    renderer="logarithmicDepthBuffer: true"
+    arjs="sourceType: webcam; trackingMethod: best; debugUIEnabled: false;"
   >
-    <a-assets>
+
+    <a-assets timeout="15000">
       <img id="page1" src="./page1.png">
       <img id="page2" src="./page2.png">
       <img id="page3" src="./page3.png">
@@ -120,73 +127,100 @@
       <img id="page6" src="./page6.png">
     </a-assets>
 
+    <!-- ตรวจจับ Hiro Marker -->
     <a-marker
       id="hiroMarker"
       preset="hiro"
       smooth="true"
       smoothCount="5"
+      smoothTolerance="0.01"
+      smoothThreshold="2"
     >
+
+      <!-- ภาพคู่มือปฐมพยาบาล -->
       <a-plane
         id="pagePlane"
-        position="0 0.7 0"
+        position="0 0.05 0"
+        rotation="0 0 0"
         width="1"
-        height="1"
-        material="src: #page1; shader: flat; side: double;"
+        height="1.414"
+        material="shader: flat; src: #page1; side: double;"
       ></a-plane>
+
     </a-marker>
 
     <a-entity camera></a-entity>
+
   </a-scene>
 
   <script>
-    const pages = [
-      "#page1",
-      "#page2",
-      "#page3",
-      "#page4",
-      "#page5",
-      "#page6"
-    ];
+    const totalPages = 6;
+    let currentPage = 1;
 
-    let currentPage = 0;
-
-    const pagePlane = document.getElementById("pagePlane");
-    const pageLabel = document.getElementById("pageLabel");
+    const plane = document.getElementById("pagePlane");
+    const pageCount = document.getElementById("pageCount");
+    const status = document.getElementById("status");
     const prevBtn = document.getElementById("prevBtn");
     const nextBtn = document.getElementById("nextBtn");
+    const marker = document.getElementById("hiroMarker");
+    const scene = document.querySelector("a-scene");
 
-    function showPage(index) {
-      currentPage = Math.max(
-        0,
-        Math.min(index, pages.length - 1)
-      );
+    function showPage(page) {
+      currentPage = Math.max(1, Math.min(totalPages, page));
 
-      pagePlane.setAttribute("material", {
-        src: pages[currentPage],
+      plane.setAttribute("material", {
         shader: "flat",
+        src: "#page" + currentPage,
         side: "double"
       });
 
-      pageLabel.textContent =
-        `หน้า ${currentPage + 1} / ${pages.length}`;
+      pageCount.textContent =
+        "หน้า " + currentPage + " / " + totalPages;
 
-      prevBtn.disabled = currentPage === 0;
-      nextBtn.disabled = currentPage === pages.length - 1;
+      prevBtn.disabled = currentPage === 1;
+      nextBtn.disabled = currentPage === totalPages;
     }
 
     prevBtn.addEventListener("click", function () {
-      if (currentPage > 0) {
-        showPage(currentPage - 1);
-      }
+      showPage(currentPage - 1);
     });
 
     nextBtn.addEventListener("click", function () {
-      if (currentPage < pages.length - 1) {
-        showPage(currentPage + 1);
-      }
+      showPage(currentPage + 1);
     });
 
-    showPage(0);
+    marker.addEventListener("markerFound", function () {
+      status.textContent = "พบ Hiro Marker แล้ว";
+    });
+
+    marker.addEventListener("markerLost", function () {
+      status.textContent = "ไม่พบ Marker กรุณาส่องกล้องไปที่ Marker";
+    });
+
+    scene.addEventListener("loaded", function () {
+      status.textContent = "กำลังเตรียมกล้อง กรุณารอสักครู่...";
+    });
+
+    scene.addEventListener("camera-init", function () {
+      status.textContent = "กล้องพร้อมแล้ว กรุณาสแกน Hiro Marker";
+    });
+
+    scene.addEventListener("camera-error", function () {
+      status.textContent = "เปิดกล้องไม่ได้ กรุณาอนุญาตการใช้กล้อง";
+    });
+
+    // แจ้งเตือนหากโหลดภาพไม่สำเร็จ
+    for (let i = 1; i <= totalPages; i++) {
+      const img = document.getElementById("page" + i);
+
+      img.addEventListener("error", function () {
+        status.textContent =
+          "โหลด page" + i + ".png ไม่สำเร็จ กรุณาตรวจชื่อไฟล์";
+      });
+    }
+
+    showPage(1);
   </script>
+
 </body>
 </html>
